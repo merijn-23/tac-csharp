@@ -20,6 +20,7 @@ main = do
     files <- case args of
               []  ->  do
                 putStrLn "no argument given; assuming example.cs"
+                --return ["test-cases/01-test-task01.cs"]
                 return ["example.cs"]
               xs  ->  return xs
     -- translate each of the files
