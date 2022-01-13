@@ -22,14 +22,16 @@ type CSharpAlgebra clas memb stat expr             --
       , [stat]                -> stat              --       | StatBlock  [Stat]
       )                                            --
                                                    --
-    , ( Int                     -> expr            --  Expr = ExprConst  Int
+    , ( Int                     -> expr            --  Expr = ExprConstInt  Int
+      , Bool                    -> expr            --  Expr = ExprConstBool  Bool
+      , Char                    -> expr            --  Expr = ExprConstChar  Char
       , String                  -> expr            --       | ExprVar    String
       , String -> expr -> expr  -> expr            --       | ExprOper   String Expr Expr
       )                                            --
     )                                              --
 
 foldCSharp :: CSharpAlgebra clas memb stat expr -> Class -> clas
-foldCSharp (c, (md,mm), (sd,se,si,sw,sr,sb), (ec,ev,eo)) = fClas
+foldCSharp (c, (md,mm), (sd,se,si,sw,sr,sb), (eci,ecb,ecc,ev,eo)) = fClas
   where
     fClas (Class      t ms)     = c  t (map fMemb ms)
     fMemb (MemberD    d)        = md d
@@ -40,6 +42,8 @@ foldCSharp (c, (md,mm), (sd,se,si,sw,sr,sb), (ec,ev,eo)) = fClas
     fStat (StatWhile  e s1)     = sw (fExpr e) (fStat s1)
     fStat (StatReturn e)        = sr (fExpr e)
     fStat (StatBlock  ss)       = sb (map fStat ss)
-    fExpr (ExprConst  con)      = ec con
+    fExpr (ExprConstInt con)    = eci con
+    fExpr (ExprConstBool con)   = ecb con
+    fExpr (ExprConstChar con)   = ecc con
     fExpr (ExprVar    var)      = ev var
     fExpr (ExprOper   op e1 e2) = eo op (fExpr e1) (fExpr e2)

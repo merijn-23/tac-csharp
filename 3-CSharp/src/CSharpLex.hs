@@ -18,6 +18,8 @@ data Token = POpen    | PClose      -- parentheses     ()
            | UpperId   String       -- uppercase identifiers
            | LowerId   String       -- lowercase identifiers
            | ConstInt  Int
+           | ConstBool Bool
+           | ConstChar Char
            deriving (Eq, Show)
 
 ----- Begin Lexer -----
@@ -30,6 +32,8 @@ lexToken = greedyChoice
              , lexEnum StdType stdTypes
              , lexEnum Operator operators
              , lexConstInt
+             , lexConstBool
+             , lexConstChar
              , lexLowerId
              , lexUpperId
              ]
@@ -67,9 +71,15 @@ stdTypes = ["int", "long", "double", "float", "byte", "short", "bool", "char"]
 operators :: [String]
 operators = ["+", "-", "*", "/", "%", "&&", "||", "^", "<=", "<", ">=", ">", "==", "!=", "="]
 
-
 lexConstInt :: Parser Char Token
 lexConstInt = ConstInt . read <$> greedy1 (satisfy isDigit)
+
+lexConstBool :: Parser Char Token 
+lexConstBool = ConstBool <$> ( True <$ token "true"
+                           <|> False <$ token "false")
+
+lexConstChar :: Parser Char Token
+lexConstChar = ConstChar <$> (symbol '\'' *> anySymbol <* symbol '\'')
 
 lexLowerId :: Parser Char Token
 lexLowerId = (\x xs -> LowerId (x:xs)) <$> satisfy isLower <*> greedy (satisfy isAlphaNum)
@@ -109,9 +119,19 @@ sLowerId = (\(LowerId x) -> x) <$> satisfy isLowerId
   where isLowerId (LowerId _) = True
         isLowerId _           = False
 
-sConst :: Parser Token Int
-sConst  = (\(ConstInt x) -> x) <$> satisfy isConst
+sConstInt :: Parser Token Int
+sConstInt = (\(ConstInt x) -> x) <$> satisfy isConst
   where isConst (ConstInt  _) = True
+        isConst _             = False
+
+sConstChar :: Parser Token Char
+sConstChar = (\(ConstChar x) -> x) <$> satisfy isConst
+  where isConst (ConstChar _) = True
+        isConst _             = False
+
+sConstBool :: Parser Token Bool
+sConstBool = (\(ConstBool x) -> x) <$> satisfy isConst
+  where isConst (ConstBool _) = True
         isConst _             = False
 
 sOperator :: Parser Token String

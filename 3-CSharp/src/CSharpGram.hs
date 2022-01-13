@@ -19,7 +19,9 @@ data Stat = StatDecl   Decl
           | StatBlock  [Stat]
           deriving Show
 
-data Expr = ExprConst  Int
+data Expr = ExprConstInt  Int
+          | ExprConstChar Char
+          | ExprConstBool Bool
           | ExprVar    String
           | ExprOper   String Expr Expr
           deriving Show
@@ -62,7 +64,9 @@ pStat =  StatExpr <$> pExpr <*  sSemi
      where optionalElse = option (symbol KeyElse *> pStat) (StatBlock [])
 
 pExprSimple :: Parser Token Expr
-pExprSimple =  ExprConst <$> sConst
+pExprSimple =  ExprConstInt <$> sConstInt
+           <|> ExprConstChar <$> sConstChar
+           <|> ExprConstBool <$> sConstBool
            <|> ExprVar   <$> sLowerId
            <|> parenthesised pExpr
 

@@ -8,6 +8,8 @@ import CSharpGram
 import CSharpAlgebra
 import SSM
 
+import Data.Char
+
 {-
   This file contains a starting point for the code generation which should handle very simple programs.
 -}
@@ -17,7 +19,6 @@ type C = Code                   -- Class
 type M = Code                   -- Member
 type S = Code                   -- Statement
 type E = ValueOrAddress -> Code -- Expression
-
 
 codeAlgebra :: CSharpAlgebra C M S E
 codeAlgebra =
@@ -64,10 +65,16 @@ codeStatement = (fStatDecl, fStatExpr, fStatIf, fStatWhile, fStatReturn, fStatBl
     fStatBlock :: [S] -> S
     fStatBlock = concat
 
-codeExpr = (fExprCon, fExprVar, fExprOp)
+codeExpr = (fExprConInt, fExprConBool, fExprConChar, fExprVar, fExprOp)
   where
-    fExprCon :: Int -> E
-    fExprCon n va = [LDC n]
+    fExprConInt :: Int -> E
+    fExprConInt n va = [LDC n]
+
+    fExprConBool :: Bool -> E
+    fExprConBool n va = [LDC $ fromEnum n]
+
+    fExprConChar :: Char -> E
+    fExprConChar n va = [LDC $ ord n]
 
     fExprVar :: String -> E
     fExprVar x va = let loc = 42 in case va of
