@@ -9,11 +9,11 @@ main:
 	RET
 square:
 	LDL 42
+	LDL 42
+	MUL
 	LDS 0
 	LDLA 42
 	STA 0
-	LDL 42
-	MUL
 	AJS -1
 	LDL 42
 	AJS -1
@@ -25,11 +25,11 @@ abs:
 	LT
 	BRF 15
 	LDC 0
+	LDL 42
+	SUB
 	LDS 0
 	LDLA 42
 	STA 0
-	LDL 42
-	SUB
 	AJS -1
 	BRA 0
 	LDL 42
@@ -49,18 +49,18 @@ fac:
 	AJS -1
 	BRA 26
 	LDL 42
-	LDS 0
-	LDLA 42
-	STA 0
 	LDL 42
 	MUL
-	AJS -1
-	LDL 42
 	LDS 0
 	LDLA 42
 	STA 0
+	AJS -1
+	LDL 42
 	LDC 1
 	ADD
+	LDS 0
+	LDLA 42
+	STA 0
 	AJS -1
 	LDL 42
 	LDL 42

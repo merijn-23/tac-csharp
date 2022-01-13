@@ -76,16 +76,16 @@ pExprSimple =  ExprConstInt <$> sConstInt
 --   we opted for this approach because
 --     a) it is simpler
 --     b) "=" is our only right associative operator, so this does not introduce duplicative code
-pExpr :: Parser Token Expr
-pExpr = foldr (genl . map (\s -> (Operator s, ExprOper s)))
-          (genr [(Operator "=", ExprOper "=")] pExprSimple) -- initial expression, after right associative "="
+pExpr :: Parser Token Expr  --
+pExpr = genr [(Operator "=", ExprOper "=")] 
+        ( foldr (genl . map (\s -> (Operator s, ExprOper s))) pExprSimple -- initial expression, after right associative "="
           [ ["||"] -- second lowest order of precendence, after "="
           , ["&&"]
           , ["^"]
           , ["==", "!="]
           , ["<", ">", "<=", ">="]
           , ["+", "-"]
-          , ["*", "/", "%"] ]      -- highest order of precedence
+          , ["*", "/", "%"] ])      -- highest order of precedence
 
 -- From slides 04, adjusted to use String instead of Char
 type Op a = (Token, a -> a -> a)
