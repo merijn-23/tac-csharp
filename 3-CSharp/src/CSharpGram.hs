@@ -70,8 +70,30 @@ pExprSimple =  ExprConstInt <$> sConstInt
            <|> ExprVar   <$> sLowerId
            <|> parenthesised pExpr
 
+-- Another approach for deciding between left and right associativity, could be:
+--   add a boolean to each operator in the double list, True means it should use genl, False uses genr
+--   then fold with generic gen function, which picks genl or genr based on the boolean
+--   we opted for this approach because
+--     a) it is simpler
+--     b) "=" is our only right associative operator, so this does not introduce duplicative code
 pExpr :: Parser Token Expr
-pExpr = chainr pExprSimple (ExprOper <$> sOperator)
+pExpr = foldr (genl . map (\s -> (Operator s, ExprOper s)))
+          (genr [(Operator "=", ExprOper "=")] pExprSimple) -- initial expression, after right associative "="
+          [ ["||"] -- second lowest order of precendence, after "="
+          , ["&&"]
+          , ["^"]
+          , ["==", "!="]
+          , ["<", ">", "<=", ">="]
+          , ["+", "-"]
+          , ["*", "/", "%"] ]      -- highest order of precedence
+
+-- From slides 04, adjusted to use String instead of Char
+type Op a = (Token, a -> a -> a)
+genl :: [Op a] -> Parser Token a -> Parser Token a
+genl ops p = chainl p (choice (map (\(s, c) -> c <$ symbol s) ops))
+
+genr :: [Op a] -> Parser Token a -> Parser Token a
+genr ops p = chainr p (choice (map (\(s, c) -> c <$ symbol s) ops))
 
 pDecl :: Parser Token Decl
 pDecl = Decl <$> pType <*> sLowerId
