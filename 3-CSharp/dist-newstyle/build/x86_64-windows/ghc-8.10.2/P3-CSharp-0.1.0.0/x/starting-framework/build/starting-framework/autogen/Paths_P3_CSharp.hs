@@ -29,12 +29,12 @@ version :: Version
 version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
-bindir     = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\bin"
-libdir     = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0-inplace-starting-framework"
-dynlibdir  = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2"
-datadir    = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0"
-libexecdir = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\P3-CSharp-0.1.0.0-inplace-starting-framework\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0"
-sysconfdir = "C:\\Users\\samli\\AppData\\Roaming\\cabal\\etc"
+bindir     = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\bin"
+libdir     = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0-inplace-starting-framework"
+dynlibdir  = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2"
+datadir    = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0"
+libexecdir = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\P3-CSharp-0.1.0.0-inplace-starting-framework\\x86_64-windows-ghc-8.10.2\\P3-CSharp-0.1.0.0"
+sysconfdir = "C:\\Users\\merij\\AppData\\Roaming\\cabal\\etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath
 getBinDir = catchIO (getEnv "P3_CSharp_bindir") (\_ -> return bindir)

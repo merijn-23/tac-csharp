@@ -59,9 +59,25 @@ pStat :: Parser Token Stat
 pStat =  StatExpr <$> pExpr <*  sSemi
      <|> StatIf     <$ symbol KeyIf     <*> parenthesised pExpr <*> pStat <*> optionalElse
      <|> StatWhile  <$ symbol KeyWhile  <*> parenthesised pExpr <*> pStat
+     <|> pStatFor
      <|> StatReturn <$ symbol KeyReturn <*> pExpr               <*  sSemi
      <|> pBlock
      where optionalElse = option (symbol KeyElse *> pStat) (StatBlock [])
+
+pStatFor :: Parser Token Stat
+pStatFor = (\ini cond incr body -> StatBlock [ini, (StatWhile cond (StatBlock [body, incr]))])
+              <$  symbol KeyFor <* symbol POpen
+              <*> pExprDeclO <* sSemi <*> pExpr <* sSemi <*> pExprDeclO
+              <*  symbol PClose <*> pStat
+
+pExprDeclO :: Parser Token Stat
+pExprDeclO = option pExprDecl (StatBlock [])
+
+pExprDecl :: Parser Token Stat
+pExprDecl = StatExpr <$> pExpr
+        <|> StatDecl <$> pDecl
+        <|> (\e d -> StatBlock [StatExpr e, StatDecl d]) <$> pExpr <* symbol Comma <*> pDecl
+        <|> (\d e -> StatBlock [StatDecl d, StatExpr e]) <$> pDecl <* symbol Comma <*> pExpr
 
 pExprSimple :: Parser Token Expr
 pExprSimple =  ExprConstInt <$> sConstInt
@@ -77,7 +93,7 @@ pExprSimple =  ExprConstInt <$> sConstInt
 --     a) it is simpler
 --     b) "=" is our only right associative operator, so this does not introduce duplicative code
 pExpr :: Parser Token Expr  --
-pExpr = genr [(Operator "=", ExprOper "=")] 
+pExpr = genr [(Operator "=", ExprOper "=")]
         ( foldr (genl . map (\s -> (Operator s, ExprOper s))) pExprSimple -- initial expression, after right associative "="
           [ ["||"] -- second lowest order of precendence, after "="
           , ["&&"]

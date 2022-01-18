@@ -1,0 +1,64 @@
+	Bsr main
+	HALT
+main:
+	LDC 0
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDC 0
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	BRA 26
+	LDL 42
+	LDC 1
+	ADD
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDL 42
+	LDC 1
+	ADD
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDL 42
+	LDC 5
+	LT
+	BRT -33
+	RET
+main2:
+	LDC 0
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDC 0
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	BRA 26
+	LDL 42
+	LDC 1
+	ADD
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDL 42
+	LDC 1
+	ADD
+	LDS 0
+	LDLA 42
+	STA 0
+	AJS -1
+	LDL 42
+	LDC 5
+	LT
+	BRT -33
+	RET

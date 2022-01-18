@@ -13,6 +13,7 @@ data Token = POpen    | PClose      -- parentheses     ()
            | KeyWhile | KeyReturn
            | KeyTry   | KeyCatch
            | KeyClass | KeyVoid
+           | KeyFor
            | StdType   String       -- the 8 standard types
            | Operator  String       -- the 15 operators
            | UpperId   String       -- uppercase identifiers
@@ -24,7 +25,8 @@ data Token = POpen    | PClose      -- parentheses     ()
 
 ----- Begin Lexer -----
 lexicalScanner :: Parser Char [Token]
-lexicalScanner = lexWhiteSpace *> greedy (lexToken <* lexWhiteSpace) <* eof
+lexicalScanner = lexWhiteSpace *> greedy (lexComments *> lexToken <* lexWhiteSpace)
+                                        <* lexComments <* eof
 
 lexToken :: Parser Char Token
 lexToken = greedyChoice
@@ -38,6 +40,11 @@ lexToken = greedyChoice
              , lexUpperId
              ]
 
+lexComments :: Parser Char [String]
+lexComments = greedy (lexComment <* lexWhiteSpace)
+
+lexComment :: Parser Char String
+lexComment = token "//" <* greedy (satisfy (\c -> c /= '\n'))
 
 lexTerminal :: Parser Char Token
 lexTerminal = choice [t <$ keyword s | (t,s) <- terminals]
@@ -55,6 +62,7 @@ lexTerminal = choice [t <$ keyword s | (t,s) <- terminals]
       , ( KeyIf     , "if"     )
       , ( KeyElse   , "else"   )
       , ( KeyWhile  , "while"  )
+      , ( KeyFor    , "for"    )
       , ( KeyReturn , "return" )
       , ( KeyTry    , "try"    )
       , ( KeyCatch  , "catch"  )
@@ -74,7 +82,7 @@ operators = ["+", "-", "*", "/", "%", "&&", "||", "^", "<=", "<", ">=", ">", "==
 lexConstInt :: Parser Char Token
 lexConstInt = ConstInt . read <$> greedy1 (satisfy isDigit)
 
-lexConstBool :: Parser Char Token 
+lexConstBool :: Parser Char Token
 lexConstBool = ConstBool <$> ( True <$ token "true"
                            <|> False <$ token "false")
 
