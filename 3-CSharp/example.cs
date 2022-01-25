@@ -7,15 +7,18 @@ class Hello
 
     void main()
     {
-        // hello there
-        // i am a comment
-        int b;
-        b = 1;
+        bool x;
+        x = false || true;
     }
 
     int square( int x )
     {
         int y;
+        int x;
+        int a;
+        int b;
+        int c;
+        a = b * c;
         // didnt expect me here did ya
         y = x*x;
         return y;
@@ -23,7 +26,7 @@ class Hello
 
     int abs(int x)
     {
-
+        int x;
         if (x<0)
             x = 0-x;
         return x;
@@ -31,6 +34,7 @@ class Hello
 
     int fac(int x)
     {
+        int x;
         int r; int t;
         t=1; r=1;
         while (t<=x)

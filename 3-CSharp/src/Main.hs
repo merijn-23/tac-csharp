@@ -12,6 +12,8 @@ import SSM
 import CSharpCode
 import Prelude hiding ((<$), (<*), (*>))
 
+import qualified Data.Map as M
+
 
 main :: IO ()
 main = do
@@ -40,7 +42,7 @@ processFile (infile, outfile) =
     writeFile outfile (process xs)
     putStrLn (outfile ++ " written")
   where process = formatCode
-                . foldCSharp codeAlgebra
+                . flip (foldCSharp codeAlgebra) M.empty
                 . run (pClass <* eof)
                 . run lexicalScanner
 
