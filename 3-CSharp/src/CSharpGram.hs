@@ -24,6 +24,7 @@ data Expr = ExprConstInt  Int
           | ExprConstBool Bool
           | ExprVar    String
           | ExprOper   String Expr Expr
+          | ExprMeth   String [Expr]
           deriving Show
 
 data Decl = Decl Type String
@@ -76,14 +77,15 @@ pExprDeclO = option pExprDecl (StatBlock [])
 pExprDecl :: Parser Token Stat
 pExprDecl = StatExpr <$> pExpr
         <|> StatDecl <$> pDecl
-        <|> (\e d -> StatBlock [StatExpr e, StatDecl d]) <$> pExpr <* symbol Comma <*> pDecl
-        <|> (\d e -> StatBlock [StatDecl d, StatExpr e]) <$> pDecl <* symbol Comma <*> pExpr
+        <|> (\e d -> StatBlock [StatExpr e, StatDecl d]) <$> pExpr <* (symbol Comma) <*> pDecl
+        <|> (\d e -> StatBlock [StatDecl d, StatExpr e]) <$> pDecl <* (symbol Comma) <*> pExpr
 
 pExprSimple :: Parser Token Expr
 pExprSimple =  ExprConstInt <$> sConstInt
            <|> ExprConstChar <$> sConstChar
            <|> ExprConstBool <$> sConstBool
            <|> ExprVar   <$> sLowerId
+           <|> ExprMeth <$> sLowerId <*> parenthesised (listOf pExpr (symbol Comma))
            <|> parenthesised pExpr
 
 -- Another approach for deciding between left and right associativity, could be:
@@ -120,7 +122,6 @@ pDeclSemi = pDecl <* sSemi
 pType :: Parser Token Type
 pType =  TypePrim <$> sStdType
      <|> TypeObj  <$> sUpperId
-
 
 -- The `Token` equivalents to some basic parser combinators
 parenthesised, bracketed, braced :: Parser Token b -> Parser Token b

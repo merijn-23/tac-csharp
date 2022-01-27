@@ -3,48 +3,29 @@
 // comment 4
 class Hello
 {
-    int g;
-
     void main()
     {
-        bool x;
-        x = false || true;
-    }
-
-    int square( int x )
-    {
-        int y;
-        int x;
-        int a;
-        int b;
-        int c;
-        a = b * c;
-        // didnt expect me here did ya
-        y = x*x;
-        return y;
-    }
-
-    int abs(int x)
-    {
-        int x;
-        if (x<0)
-            x = 0-x;
-        return x;
-    }
-
-    int fac(int x)
-    {
-        int x;
-        int r; int t;
-        t=1; r=1;
-        while (t<=x)
+        if(false)
         {
-            r = r*t;
-            // wow
-            t = t+1;
+          print(funcOne(1, 2));
         }
-        return r;
-   }
+        else
+        {
+          int a;
+          a = funcTwo(2, 2);
+          print(a);
+        }
+    }
+
+    int funcOne(int a, int b)
+    {
+      return a + b;
+    }
+
+    int funcTwo(int a, int b)
+    {
+      return a * b;
+    }
+
+
 }
-// eof comment
-// cuz why nots

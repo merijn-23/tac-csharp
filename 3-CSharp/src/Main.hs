@@ -8,6 +8,7 @@ import ParseLib.Abstract.Derived
 import CSharpLex
 import CSharpGram
 import CSharpAlgebra
+import CSharpStatic
 import SSM
 import CSharpCode
 import Prelude hiding ((<$), (<*), (*>))
@@ -41,9 +42,12 @@ processFile (infile, outfile) =
     xs <- readFile infile
     writeFile outfile (process xs)
     putStrLn (outfile ++ " written")
-  where process = formatCode
-                . flip (foldCSharp codeAlgebra) M.empty
-                . run (pClass <* eof)
+  where process xs = formatCode
+                   $ flip (foldCSharp codeAlgebra) (M.fromList (static xs), M.empty)
+                   $ parsed xs
+        static  = foldCSharp staticAlgebra
+                . parsed
+        parsed  = run (pClass <* eof)
                 . run lexicalScanner
 
 run :: Parser s a -> [s] -> a

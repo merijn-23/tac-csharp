@@ -1,0 +1,58 @@
+	Bsr main
+	HALT
+main:
+	LINK 1
+	LDC 0
+	BRF 16
+	LDC 1
+	LDC 2
+	Bsr funcOne
+	LDR R3
+	TRAP 0
+	LDR R3
+	AJS -1
+	BRA 24
+	LDC 2
+	LDC 2
+	Bsr funcTwo
+	LDR R3
+	LDS 0
+	LDLA 1
+	STA 0
+	AJS -1
+	LDL 1
+	TRAP 0
+	LDR R3
+	AJS -1
+	UNLINK
+	STS 0
+	AJS 1
+	RET
+funcOne:
+	LINK 0
+	LDL -2
+	LDL -3
+	ADD
+	STR R3
+	UNLINK
+	STS -2
+	AJS -1
+	RET
+	UNLINK
+	STS -2
+	AJS -1
+	RET
+funcTwo:
+	LINK 0
+	LDL -2
+	LDL -3
+	MUL
+	STR R3
+	UNLINK
+	STS -2
+	AJS -1
+	RET
+	UNLINK
+	STS -2
+	AJS -1
+	RET

@@ -19,7 +19,7 @@ build-type:          Simple
 
 executable starting-framework
   main-is:             Main.hs
-  other-modules:       CSharpAlgebra, CSharpCode, CSharpGram, CSharpLex, SSM
+  other-modules:       CSharpAlgebra, CSharpStatic, CSharpCode, CSharpGram, CSharpLex, SSM
   -- other-extensions:
   build-depends:       base,
                        uu-tc >=2015,
